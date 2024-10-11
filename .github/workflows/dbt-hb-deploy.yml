@@ -73,6 +73,8 @@ jobs:
             if [ "$status" = "10" ] && [ "$artifacts_saved" = "true" ]; then
               echo "Job completed successfully and artifacts are saved"
               break
+            elif [ "$status" = "10" ]; then
+              echo "Job completed successfully, waiting for artifacts to be saved..."
             elif [ "$status" = "20" ]; then
               echo "Error: dbt run failed"
               exit 1
@@ -92,12 +94,11 @@ jobs:
       - name: Create artifacts directory
         run: mkdir ci_artifacts
 
-      # Replace the dbt project ID in this step with your project ID
       - name: Download manifest
         run: |
           response=$(curl -s -w "\n%{http_code}" --request GET \
                -H "Authorization: Token ${{ secrets.DBT_CLOUD_API_KEY }}" \
-               "https://cloud.getdbt.com/api/v2/accounts/21999/runs/${{ steps.trigger-job.outputs.JOB_ID }}/artifacts/manifest.json")
+               "https://cloud.getdbt.com/api/v2/accounts/$DBT_ACCOUNT_ID/runs/${{ steps.trigger-job.outputs.JOB_ID }}/artifacts/manifest.json")
 
           http_code=$(echo "$response" | tail -n1)
           body=$(echo "$response" | sed '$d')
@@ -116,6 +117,6 @@ jobs:
           HASHBOARD_PROJECT_ID: ${{ secrets.HASHBOARD_PROJECT_ID }}
           HASHBOARD_ACCESS_KEY_ID: ${{ secrets.HASHBOARD_ACCESS_KEY_ID }}
           HASHBOARD_SECRET_ACCESS_KEY_TOKEN: ${{ secrets.HASHBOARD_ACCESS_KEY_TOKEN }}
-          HASHBOARD_CLI_BASE_URI: https://demo.hashboard.com
+          HASHBOARD_CLI_BASE_URI: https://demo.hashboard.com  # Remove this for non-demo actions
         run: |
           hb build  --dbt-artifacts=./ci_artifacts && hb build apply --no-confirm

@@ -15,7 +15,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Replace the dbt URL in this step with your CI job
       - name: Trigger DBT Cloud Job
         id: trigger-job
         run: |
@@ -53,7 +52,6 @@ jobs:
           pip install dbt
           pip install --pre hashboard-cli
 
-      # Replace the dbt project ID in this step with your project ID
       - name: Wait for DBT Cloud Job to complete and artifacts to be saved
         run: |
           job_id=${{ steps.trigger-job.outputs.JOB_ID }}
@@ -76,6 +74,8 @@ jobs:
             if [ "$status" = "10" ] && [ "$artifacts_saved" = "true" ]; then
               echo "Job completed successfully and artifacts are saved"
               break
+            elif [ "$status" = "10" ]; then
+              echo "Job completed successfully, waiting for artifacts to be saved..."
             elif [ "$status" = "20" ]; then
               echo "Error: dbt run failed"
               exit 1
@@ -95,7 +95,6 @@ jobs:
       - name: Create artifacts directory
         run: mkdir ci_artifacts
 
-      # Replace the dbt project ID in this step with your project ID
       - name: Download manifest
         run: |
           response=$(curl -s -w "\n%{http_code}" --request GET \
@@ -119,7 +118,7 @@ jobs:
           HASHBOARD_PROJECT_ID: ${{ secrets.HASHBOARD_PROJECT_ID }}
           HASHBOARD_ACCESS_KEY_ID: ${{ secrets.HASHBOARD_ACCESS_KEY_ID }}
           HASHBOARD_SECRET_ACCESS_KEY_TOKEN: ${{ secrets.HASHBOARD_ACCESS_KEY_TOKEN }}
-          HASHBOARD_CLI_BASE_URI: https://demo.hashboard.com
+          HASHBOARD_CLI_BASE_URI: https://demo.hashboard.com  # Remove this for non-demo actions
         run: |
           hb build  --dbt-artifacts=./ci_artifacts | tee out.txt
           EXIT_CODE=${PIPESTATUS[0]}
