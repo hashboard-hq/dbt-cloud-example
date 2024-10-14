@@ -50,7 +50,7 @@ jobs:
       - name: Install Hashboard CLI
         run: |
           pip install dbt
-          pip install --pre hashboard-cli
+          pip install hashboard-cli
 
       - name: Wait for DBT Cloud Job to complete and artifacts to be saved
         run: |
