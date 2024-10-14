@@ -157,6 +157,8 @@ models:
             primaryKey: true
       - name: pizza_size
         description: pizza size; small, medium or large
+      - name: pizza_shape
+        description: shape of the pizza
       - name: pizza_type
         description: the type of pizza
       - name: price
