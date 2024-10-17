@@ -118,5 +118,7 @@ jobs:
           HASHBOARD_ACCESS_KEY_ID: ${{ secrets.HASHBOARD_ACCESS_KEY_ID }}
           HASHBOARD_SECRET_ACCESS_KEY_TOKEN: ${{ secrets.HASHBOARD_ACCESS_KEY_TOKEN }}
           HASHBOARD_CLI_BASE_URI: https://demo.hashboard.com  # Remove this for non-demo actions
+          HB_DBT_USE_DEFER: false
+          HB_DBT_INCLUDE_DB_IN_SCHEMA: false
         run: |
           hb build  --dbt-artifacts=./ci_artifacts && hb build apply --no-confirm
