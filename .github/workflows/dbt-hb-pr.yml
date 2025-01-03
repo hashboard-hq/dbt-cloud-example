@@ -62,7 +62,7 @@ jobs:
           HASHBOARD_SECRET_ACCESS_KEY_TOKEN: ${{ secrets.HASHBOARD_ACCESS_KEY_TOKEN }}
           HASHBOARD_CLI_BASE_URI: https://demo.hashboard.com # Remove this for non-demo actions
         run: |
-          hb build --dbt-cloud-run-id=${{ steps.trigger-job.outputs.RUN_ID }} | tee out.txt
+          hb build --dbt-cloud-run-id=${{ steps.trigger-job.outputs.RUN_ID }} --staging-only | tee out.txt
           EXIT_CODE=${PIPESTATUS[0]}
 
           RESULT=$(cat out.txt | sed 's/`//g')
