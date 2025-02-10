@@ -1,4 +1,4 @@
-select 
+select
   timestamp,
   order_id as id,
   payment_method,
@@ -6,6 +6,11 @@ select
   type,
   customer_id,
   sum(item_price) as total_order_value,
+  case
+    when item_price > 10 then 'high'
+    when item_price > 5 then 'medium'
+    else 'low'
+  end as order_value_bucket,
   any_value(loyalty_status) as loyalty_status,
   any_value(discount_code) as discount_code,
   any_value(feedback_rating) as feedback_rating,
