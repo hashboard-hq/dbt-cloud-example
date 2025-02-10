@@ -138,6 +138,7 @@ models:
       - name: referral_source
       - name: cook_id
       - name: location_id
+      - name: order_value_bucket
     meta:
       hashboard:
         alias: orders
